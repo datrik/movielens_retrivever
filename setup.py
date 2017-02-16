@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='movielens_retriever',
-      version='0.1',
+      version='0.11',
       description='A package to download movielens dataset and create interactions matrices',
       author='Datrik Intelligence, S.A.',
       author_email='info@datrik.com',
