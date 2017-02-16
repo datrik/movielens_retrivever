@@ -1,7 +1,8 @@
-import sys
+#!/usr/bin/env python
+#  -*- coding: utf-8 -*-
 
+import sys
 from scipy import io
-from sklearn.model_selection import train_test_split
 import os
 import zipfile
 import pandas as pd
@@ -30,15 +31,16 @@ class MoviLens:
     DS10K = "100k"
     DS20M = "20m"
 
-    def __init__(self, dataset_type, threshold=4.0, save_interaction_matrix=True,
-                 validation_users_size=0.3, protocol=5, protocol_sorted=True):
+    def __init__(self, dataset_type, threshold=None, save_interaction_matrix=True,
+                 protocol=5, protocol_sorted=True):
+
         self.dataset_type = dataset_type
         self.threshold = threshold
         self.save_interaction_matrix = save_interaction_matrix
         self.validation_size = 0.3
         self.protocol = protocol
         self.protocol_sorted = protocol_sorted
-        self._interaction_matrix_building = 1
+
 
 
     def _download_data(self, dest_path):
@@ -54,7 +56,7 @@ class MoviLens:
             os.makedirs(os.path.dirname(dest_path))
 
         with open(dest_path, 'wb') as fd:
-            for chunk in req.iter_content():
+            for chunk in req.iter_content(chunk_size=1024):
                 fd.write(chunk)
 
 
@@ -111,11 +113,11 @@ class MoviLens:
     def __build_interaction_matrix(self, rows, cols, data):
         """
         Build the training matrix (no_users, no_items),
-        with ratings >= 4.0 being marked as positive and
+        with ratings >= threshold being marked as positive and
         the rest as negative.
         """
 
-        if self._interaction_matrix_building == 1:
+        if not self.threshold:
             mat = sp.coo_matrix((data.iloc[:, 2], (data.iloc[:, 0], data.iloc[:, 1])),
                                 shape=(rows, cols), dtype=np.int32)
 

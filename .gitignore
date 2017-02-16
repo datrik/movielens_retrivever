@@ -54,3 +54,6 @@ env/
 filecelery.egg-info/
 dist/
 test/
+
+# Movielens_retriever
+movielens_retriever/data
